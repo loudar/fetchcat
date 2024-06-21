@@ -121,8 +121,29 @@ export class GenericTemplates {
         const isText = computedSignal(contentType, type => type && type.includes("text"));
 
         return create("div")
-            .classes("flex-grow", "body-display")
+            .classes("flex-grow", "flex-v", "body-display")
             .children(
+                create("div")
+                    .classes("flex")
+                    .children(
+                        GenericTemplates.buttonWithIcon("content_copy", "Copy", () => {
+                            navigator.clipboard.writeText(body.value);
+                            toast("Copied to clipboard", null, "positive", 2);
+                        }),
+                        GenericTemplates.buttonWithIcon("download", "Download", () => {
+                            let downloadBody = body.value;
+                            try {
+                                downloadBody = JSON.stringify(downloadBody, null, 2);
+                            } catch (e) {}
+                            const blob = new Blob([downloadBody], {type: contentType.value});
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = "response.txt";
+                            a.click();
+                            URL.revokeObjectURL(url);
+                        }),
+                    ).build(),
                 ifjs(isJson, create("div")
                     .classes("json-display")
                     .children(
@@ -253,7 +274,7 @@ export class GenericTemplates {
             .classes("collapsible-content")
             .id(uniqueId)
             .children(content)
-            .build()
+            .build();
 
         const details = create("details")
             .classes("collapsible", "flex-v", ...classes)
@@ -385,7 +406,7 @@ export class GenericTemplates {
                 GenericTemplates.textArea(body, null, "body", (val) => {
                     body.value = val;
                 }),
-                create("h2")
+                create("span")
                     .text("Preview")
                     .build(),
                 GenericTemplates.bodyDisplay(body, contentType),
