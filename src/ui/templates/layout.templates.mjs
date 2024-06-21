@@ -9,6 +9,12 @@ export class LayoutTemplates {
         headers.subscribe((val) => {
             request.updateHeaders(val);
         });
+        const headersTitle = computedSignal(headers, (val) => {
+            if (Object.keys(val).length === 0) {
+                return "Headers";
+            }
+            return "Headers (" + Object.keys(val).length + ")";
+        });
 
         return create("div")
             .classes("app", "padded-big", "flex-v")
@@ -16,7 +22,7 @@ export class LayoutTemplates {
                 create("div")
                     .classes("flex", "restrict-to-window")
                     .children(
-                        GenericTemplates.select("", requestTypes, signal(request.method), (type) => {
+                        GenericTemplates.select(null, requestTypes, signal(request.method), (type) => {
                             request.updateMethod(type);
                         }),
                         GenericTemplates.input("text", "url", request.url, "URL", "URL", "url", ["flex-grow"], (val) => {
@@ -31,7 +37,7 @@ export class LayoutTemplates {
                 create("div")
                     .classes("flex", "flex-grow")
                     .children(
-                        GenericTemplates.collapsible("Headers", GenericTemplates.headers(headers)),
+                        GenericTemplates.collapsible(headersTitle, GenericTemplates.headers(headers), ["full-width"]),
                     ).build(),
                 ifjs(sending, create("div")
                     .classes("flex")

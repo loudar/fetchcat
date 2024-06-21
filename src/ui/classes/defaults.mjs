@@ -13,3 +13,7 @@ export const requestTypes = [
 ];
 
 export const defaultRequestType = requestTypes[0].value;
+
+export const defaultHeaders = {
+    "Content-Type": "application/json",
+};

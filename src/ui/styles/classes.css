@@ -43,6 +43,10 @@
     border: var(--input-border-width) solid var(--bg-4);
 }
 
+.collapsible-content {
+    padding-top: var(--gap-v);
+}
+
 .fixed {
     position: fixed;
 }

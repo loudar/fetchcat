@@ -78,7 +78,7 @@ export class GenericTemplates {
     }
 
     /**
-     * @param {string} label
+     * @param {string|null} label
      * @param {Array<{text: string, value: any}>} options
      * @param {any} value
      * @param {(value: any) => void} onchange
@@ -87,9 +87,9 @@ export class GenericTemplates {
         return create("div")
             .classes("flex", "align-center")
             .children(
-                create("span")
+                ifjs(label, create("span")
                     .text(label)
-                    .build(),
+                    .build()),
                 create("div")
                     .classes("select")
                     .children(
@@ -127,7 +127,7 @@ export class GenericTemplates {
             ).build();
     }
 
-    static collapsible(text, content) {
+    static collapsible(text, content, classes = []) {
         const uniqueId = Math.random().toString(36).substring(7);
         const toggled = signal(false);
         const iconClass = computedSignal(toggled, on => on ? "rot90" : "rot0");
@@ -140,7 +140,7 @@ export class GenericTemplates {
             .build()
 
         return create("details")
-            .classes("collapsible", "flex-v")
+            .classes("collapsible", "flex-v", ...classes)
             .children(
                 create("summary")
                     .classes("collapsible-header", "flex", "align-center")

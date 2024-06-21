@@ -1,8 +1,9 @@
 import {signal} from "https://fjs.targoninc.com/f.mjs";
+import {ApiCache} from "./apicache.mjs";
 
 export class Request {
     apiUrl = "http://localhost:8080/send-request";
-    storageImplementation = sessionStorage;
+    cache = ApiCache;
 
     constructor({url, method, headers, body}) {
         this.url = url;
@@ -31,27 +32,26 @@ export class Request {
 
     updateUrl(url) {
         this.url = url;
-        this.cacheLocally();
+        this.cacheLocally().then();
     }
 
     updateMethod(method) {
         this.method = method;
-        this.cacheLocally();
+        this.cacheLocally().then();
     }
 
     updateHeaders(headers) {
         this.headers = headers;
-        this.cacheLocally();
+        this.cacheLocally().then();
     }
 
     updateBody(body) {
         this.body = body;
-        this.cacheLocally();
+        this.cacheLocally().then();
     }
 
-    cacheLocally() {
-        this.storageImplementation.setItem(this.url, JSON.stringify(this));
-        this.storageImplementation.setItem("lastUrl", this.url);
+    async cacheLocally() {
+        await this.cache.set("unsavedRequest", JSON.parse(JSON.stringify(this)));
     }
 
     async send(sending = signal(false)) {
@@ -68,16 +68,13 @@ export class Request {
         return res;
     }
 
-    fillFromLocalCache() {
-        const lastUrl = this.storageImplementation.getItem("lastUrl");
-        if (lastUrl) {
-            const lastRequest = JSON.parse(this.storageImplementation.getItem(lastUrl));
-            if (lastRequest) {
-                this.url = lastRequest.url;
-                this.method = lastRequest.method;
-                this.headers = lastRequest.headers;
-                this.body = lastRequest.body;
-            }
+    async fillFromLocalCache() {
+        const unsavedRequest = await this.cache.get("unsavedRequest");
+        if (unsavedRequest) {
+            this.url = unsavedRequest.url;
+            this.method = unsavedRequest.method;
+            this.headers = unsavedRequest.headers;
+            this.body = unsavedRequest.body;
         }
     }
 }
