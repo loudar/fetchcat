@@ -1,0 +1,124 @@
+.negative * {
+    color: var(--red);
+}
+
+.positive * {
+    color: var(--green);
+}
+
+.sensitive * {
+    color: var(--yellow);
+}
+
+.info * {
+    color: var(--blue);
+}
+
+.special * {
+    color: var(--purple);
+}
+
+.restrict-to-window {
+    max-width: 100vw;
+    max-height: 100vh;
+}
+
+.circle-toggle {
+    cursor: pointer;
+    border-radius: var(--input-border-radius);
+}
+
+.circle-toggle:hover {
+    background: var(--bg-3);
+}
+
+.collapsible-header {
+    cursor: pointer;
+}
+
+.collapsible {
+    background: var(--bg-2);
+    padding: var(--gap-v);
+    border-radius: var(--input-border-radius);
+    border: var(--input-border-width) solid var(--bg-4);
+}
+
+.fixed {
+    position: fixed;
+}
+
+.hidden {
+    display: none;
+}
+
+.rot0 {
+    transform: rotate(0deg);
+}
+
+.rot90 {
+    transform: rotate(90deg);
+}
+
+.rot180 {
+    transform: rotate(180deg);
+}
+
+.rot270 {
+    transform: rotate(270deg);
+}
+
+.body-display {
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    font-family: monospace;
+    padding: var(--gap-v);
+    border-radius: var(--input-border-radius);
+    border: var(--input-border-width) solid var(--bg-4);
+    background: var(--bg-3);
+    max-height: 50vh;
+    overflow: auto;
+}
+
+.spinner {
+    --spinner-size: 1em;
+    --translation-size: calc(var(--spinner-size) / 2 - var(--spinner-size) / 10);
+    height: var(--spinner-size);
+    width: var(--spinner-size);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner > div {
+    box-sizing: border-box;
+    position: absolute;
+    width: 20%; /*This size will affect the distance of the dots from the center.*/
+    height: 20%; /*Should be the same as the width.*/
+    border-radius: 50%;
+    background-color: var(--text);
+    animation: spinning-circle 1.4s linear infinite;
+}
+
+@keyframes spinning-circle {
+    0% {
+        transform: rotate(0deg) translate(var(--translation-size)) rotate(0deg) scale(0.5);
+    }
+    50% {
+        transform: rotate(240deg) translate(var(--translation-size)) rotate(-240deg) scale(1);
+    }
+    100% {
+        transform: rotate(360deg) translate(var(--translation-size)) rotate(-360deg) scale(0.5);
+    }
+}
+
+.spinner > div::after {
+    content: "";
+    display: block;
+    margin: 0 auto;
+    width: 15%;
+    height: 15%;
+    background-color: var(--text);
+    border-radius: 100%;
+}

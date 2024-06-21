@@ -1,0 +1,341 @@
+:root {
+    --black: #0f0f12;
+    --black-2: #151519;
+    --black-3: #1b1b20;
+    --black-4: #1e1e24;
+    --white: #efe9e7ff;
+    --white-2: #e7ddda;
+    --white-3: #ded2ce;
+    --white-4: #d6c9c5;
+    --blue: #16bac5ff;
+    --green: #6a994eff;
+    --red: #bc4749ff;
+    --yellow: #f0c929ff;
+    --purple: #6a4c93ff;
+    --font-size-base: 18px;
+    --gap-h: 5px;
+    --gap-v: 10px;
+    --input-padding-h: 0.5rem;
+    --input-padding-v: 0.25rem;
+    --input-border-radius: 0.25rem;
+    --input-border-width: 1px;
+    --avatar-border-width: 2px;
+    --animation-time: 0.25s;
+    --message-padding-left: 3em;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --bg: var(--white);
+        --bg-2: var(--white-2);
+        --bg-3: var(--white-3);
+        --bg-4: var(--white-4);
+        --text: var(--black);
+        --text-2: var(--black-2);
+        --text-3: var(--black-3);
+        --text-4: var(--black-4);
+        --yellow: #bf871d;
+        --green: #478422;
+        --blue: #387be3;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: var(--black);
+        --bg-2: var(--black-2);
+        --bg-3: var(--black-3);
+        --bg-4: var(--black-4);
+        --text: var(--white);
+        --text-2: var(--white-2);
+        --text-3: var(--white-3);
+        --text-4: var(--white-4);
+    }
+}
+
+.background {
+    background-color: var(--bg);
+}
+
+.background-2 {
+    background-color: var(--bg-2);
+}
+
+.background-3 {
+    background-color: var(--bg-3);
+}
+
+.background-4 {
+    background-color: var(--bg-4);
+}
+
+html, body {
+    height: 100dvh;
+    width: 100dvw;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Roboto', sans-serif;
+    font-size: var(--font-size-base);
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text);
+    font-weight: 700;
+    margin: 0;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 1.75rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+h4 {
+    font-size: 1.2rem;
+}
+
+span {
+    text-align: start;
+    height: max-content;
+}
+
+button, input, textarea, select {
+    background-color: var(--bg);
+    border: var(--input-border-width) solid var(--bg-4);
+    border-radius: var(--input-border-radius);
+    color: var(--text);
+    font-family: 'Roboto', sans-serif;
+    font-size: var(--font-size-base);
+    margin: 0;
+    padding: var(--input-padding-v) var(--input-padding-h);
+    height: max-content;
+}
+
+button.no-border, input.no-border, textarea.no-border, select.no-border {
+    border: none;
+    background: transparent;
+}
+
+button.positive, input.positive, textarea.positive, select.positive {
+    border: var(--input-border-width) solid var(--green);
+    color: var(--green);
+}
+
+button.negative, input.negative, textarea.negative, select.negative {
+    border: var(--input-border-width) solid var(--red);
+    color: var(--red);
+}
+
+button.sensitive, input.sensitive, textarea.sensitive, select.sensitive {
+    border: var(--input-border-width) solid var(--yellow);
+    color: var(--yellow);
+}
+
+button.double, input.double, textarea.double, select.double {
+    padding: var(--input-padding-v) calc(var(--input-padding-h) * 2);
+}
+
+button {
+    align-items: center;
+}
+
+button.active {
+    background-color: var(--bg-2);
+    border-color: var(--blue);
+}
+
+div {
+    box-sizing: border-box;
+}
+
+a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.8em;
+}
+
+a .material-symbols-outlined {
+    font-size: 0.9em !important;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+label {
+    color: var(--text-2);
+    font-size: 0.8em;
+}
+
+.align-center {
+    align-items: center;
+}
+
+button {
+    cursor: pointer;
+    align-items: center;
+}
+
+button:hover {
+    background-color: var(--bg-3);
+}
+
+.material-symbols-outlined {
+    font-size: var(--font-size-base) !important;
+}
+
+#toasts {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-v);
+    padding: var(--gap-v);
+    z-index: 999;
+}
+
+#notifications {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-v);
+    padding: var(--gap-v);
+    z-index: 999;
+}
+
+#popups {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    display: none;
+}
+
+#popups:has(.popup-container) {
+    display: flex;
+}
+
+.popup-container {
+    background: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.toast {
+    background: var(--bg-4);
+    border: 1px solid var(--bg-3);
+    border-radius: var(--input-border-radius);
+    padding: var(--gap-h) var(--gap-v);
+    display: flex;
+    gap: var(--gap-h);
+    align-self: end;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    max-width: max-content;
+    pointer-events: none;
+}
+
+.toast.negative {
+    border-color: var(--red);
+}
+
+.toast.positive {
+    border-color: var(--green);
+}
+
+textarea:focus-visible {
+    outline: none;
+}
+
+.message-input {
+    resize: none;
+}
+
+nav {
+    background: var(--bg);
+    border-bottom: 2px solid var(--text-3);
+    padding: var(--gap-h) var(--gap-v);
+    box-sizing: border-box;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.flex, .flex-v {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-h);
+}
+
+.flex-v {
+    flex-direction: column;
+    gap: var(--gap-v);
+    flex-wrap: nowrap;
+}
+
+.no-wrap {
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.padded {
+    padding: var(--gap-h);
+}
+
+.padded-big {
+    padding: var(--gap-v);
+}
+
+.no-gap {
+    gap: 0;
+}
+
+.small-gap {
+    gap: var(--gap-h);
+}
+
+.big-gap {
+    gap: var(--gap-v);
+}
+
+.bold {
+    font-weight: bold;
+}
