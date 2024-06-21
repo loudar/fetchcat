@@ -25,7 +25,9 @@ jobs:
         run: npm run package
 
       - name: Zip Windows
-        run: 7z a -tzip fetchcat-win32-x64.zip out/fetchcat-win32-x64
+        run: |
+          cd out/fetchcat-win32-x64
+          7z a -tzip ../fetchcat-win32-x64.zip .
 
       - name: Get version
         id: package
