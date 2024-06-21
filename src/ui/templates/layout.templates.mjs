@@ -4,7 +4,28 @@ import {requestTypes} from "../classes/defaults.mjs";
 import {formatTime} from "../classes/time.mjs";
 
 export class LayoutTemplates {
-    static app(request, sending, response) {
+    static app(request, sending, response, sideBarOpen) {
+        return create("div")
+            .classes("app", "padded-big", "flex")
+            .children(
+                LayoutTemplates.sideBar(request, sending, response, sideBarOpen),
+                LayoutTemplates.mainPanel(request, sending, response, sideBarOpen),
+            ).build();
+    }
+
+    static sideBar(request, sending, response, sideBarOpen) {
+        const sidebarClass = computedSignal(sideBarOpen, val => val ? "open" : "closed");
+
+        return create("div")
+            .classes("flex-v", "sidebar", sidebarClass)
+            .children(
+                create("span")
+                    .text("Sidebar")
+                    .build(),
+            ).build();
+    }
+
+    static mainPanel(request, sending, response, sideBarOpen) {
         const headers = signal(request.headers);
         headers.subscribe((val) => {
             request.updateHeaders(val);
@@ -16,10 +37,18 @@ export class LayoutTemplates {
             return "Request Headers (" + Object.keys(val).length + ")";
         });
         let urlDebounceTimeout = null;
+        const menuIcon = computedSignal(sideBarOpen, val => val ? "menu_open" : "menu");
 
         return create("div")
-            .classes("app", "padded-big", "flex-v")
+            .classes("flex-v", "flex-grow")
             .children(
+                create("div")
+                    .classes("flex")
+                    .children(
+                        GenericTemplates.buttonWithIcon(menuIcon, "Menu", () => {
+                            sideBarOpen.value = !sideBarOpen.value;
+                        }),
+                    ).build(),
                 create("div")
                     .classes("flex", "restrict-to-window")
                     .children(

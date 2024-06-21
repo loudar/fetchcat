@@ -16,9 +16,10 @@ await Promise.all([
     response.fillFromLocalCache()
 ]);
 const sending = signal(false);
+const sideBarOpen = signal(false);
 
 const content = document.getElementById('content');
-content.appendChild(LayoutTemplates.app(request, sending, response));
+content.appendChild(LayoutTemplates.app(request, sending, response, sideBarOpen));
 
 document.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && e.ctrlKey) {
