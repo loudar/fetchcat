@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "src/main.mjs",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loudar/fetchcat.git"
+  },
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
