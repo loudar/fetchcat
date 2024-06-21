@@ -30,7 +30,7 @@ export class LayoutTemplates {
                         }),
                         GenericTemplates.buttonWithIcon("send", "Send", () => {
                             request.send(sending).then(async res => {
-                                response.value = await res.json();
+                                await response.fromResponse(res);
                             });
                         }),
                     ).build(),
@@ -45,7 +45,7 @@ export class LayoutTemplates {
                         GenericTemplates.spinner(),
                         GenericTemplates.infoText("info", "No response yet", ["info"])
                     ).build()),
-                ifjs(response, LayoutTemplates.responseDisplay(response)),
+                ifjs(response.signal, LayoutTemplates.responseDisplay(response.signal)),
             ).build();
     }
 
@@ -74,8 +74,8 @@ export class LayoutTemplates {
                 create("div")
                     .classes("flex-grow", "flex", "big-gap")
                     .children(
-                        GenericTemplates.infoText("info", statusText, [responseClass]),
-                        GenericTemplates.infoText("info", timeText, [responseClass]),
+                        GenericTemplates.infoText("http", statusText, [responseClass]),
+                        GenericTemplates.infoText("timer", timeText, [responseClass]),
                     ).build(),
                 GenericTemplates.bodyDisplay(response),
             ).build();

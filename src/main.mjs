@@ -31,23 +31,26 @@ function startServer() {
         } catch (e) {
             json = null;
         }
+        let out;
         if (json) {
-            res.status(200).send({
+            out = {
                 json,
                 status: response.status,
                 statusText: response.statusText,
                 headers: response.headers,
                 time: end - start,
-            });
+            };
         } else {
-            res.status(200).send({
+            out ={
                 body,
                 status: response.status,
                 statusText: response.statusText,
                 headers: response.headers,
                 time: end - start,
-            });
+            };
         }
+        StorageCache.set("lastResponse", out);
+        res.status(200).send(out);
     });
     StorageCache.ensurePath();
     app.get('/cache', async (req, res) => {

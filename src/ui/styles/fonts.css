@@ -1,0 +1,62 @@
+@font-face {
+  font-family: 'GeistMonoNerdFontMono';
+  src: url('../assets/GeistMono/GeistMonoNerdFontMono-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GeistMonoNerdFontMono';
+  src: url('../assets/GeistMono/GeistMonoNerdFontMono-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GeistMonoNerdFontMono';
+  src: url('../assets/GeistMono/GeistMonoNerdFontMono-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GeistMonoNerdFontMono';
+  src: url('../assets/GeistMono/GeistMonoNerdFontMono-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GeistMonoNerdFontMono';
+  src: url('../assets/GeistMono/GeistMonoNerdFontMono-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GeistMonoNerdFontMono';
+  src: url('../assets/GeistMono/GeistMonoNerdFontMono-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GeistMonoNerdFontMono';
+  src: url('../assets/GeistMono/GeistMonoNerdFontMono-Thin.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GeistMonoNerdFontMono';
+  src: url('../assets/GeistMono/GeistMonoNerdFontMono-UltraBlack.otf') format('opentype');
+  font-weight: 950;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GeistMonoNerdFontMono';
+  src: url('../assets/GeistMono/GeistMonoNerdFontMono-UltraLight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+}

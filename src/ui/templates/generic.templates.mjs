@@ -1,5 +1,6 @@
 import {computedSignal, create, FjsObservable, ifjs, signal, signalMap} from 'https://fjs.targoninc.com/f.mjs';
 import {testImage} from "../classes/defaults.mjs";
+import {toast} from "../classes/ui.mjs";
 
 export class GenericTemplates {
     static input(type, name, value, placeholder, label, id, classes = [], onchange = () => {}, oninput = () => {}) {
@@ -55,7 +56,7 @@ export class GenericTemplates {
 
     static infoText(icon, text, classes = [], iconClasses = []) {
         return create("div")
-            .classes("flex", ...classes)
+            .classes("flex", "info-pill", ...classes)
             .children(
                 ifjs(icon, GenericTemplates.icon(icon, iconClasses)),
                 ifjs(text, create("span")
@@ -116,13 +117,117 @@ export class GenericTemplates {
     }
 
     static bodyDisplay(json) {
-        const content = computedSignal(json, json => json ? JSON.stringify(json, null, 4) : "");
-
         return create("div")
             .classes("flex-grow", "body-display")
             .children(
-                create("pre")
-                    .text(content)
+                ifjs(json, create("div")
+                    .classes("json-display")
+                    .children(
+                        GenericTemplates.jsonDisplay(json)
+                    ).build())
+            ).build();
+    }
+
+    static jsonDisplay(json) {
+        let template = signal(null);
+        const update = (value) => {
+            template.value = GenericTemplates.jsonValue("root", value);
+        };
+        if (json.constructor !== FjsObservable) {
+            return GenericTemplates.jsonValue("root", json);
+        }
+
+        json.subscribe(update);
+        update(json.value);
+        return template;
+    }
+
+    static jsonValue(key, json) {
+        if (json.constructor === Object) {
+            return GenericTemplates.jsonObject(key, json);
+        } else if (json.constructor === Array) {
+            return GenericTemplates.jsonArray(key, json);
+        } else {
+            return GenericTemplates.jsonPrimitive(key, json);
+        }
+    }
+
+    static jsonPrimitive(key, value) {
+        const type = value.constructor.name.toLowerCase();
+        const id = Math.random().toString(36).substring(7);
+
+        return create("div")
+            .classes("json-primitive", type)
+            .children(
+                create("span")
+                    .classes("json-key", type)
+                    .text(`${key}: `)
+                    .build(),
+                create("span")
+                    .classes("json-value", type)
+                    .text(value)
+                    .id(id)
+                    .onclick(e => {
+                        navigator.clipboard.writeText(value);
+                        const element = document.getElementById(id);
+                        toast("Copied to clipboard", {
+                            x: element.getBoundingClientRect().right + 10,
+                            y: element.getBoundingClientRect().top,
+                        }, "positive", 2);
+                    })
+                    .build()
+            ).build();
+    }
+
+    static jsonObject(key, json) {
+        if (Object.keys(json).length === 0) {
+            return create("span")
+                .text(`${key}: {}`)
+                .build();
+        }
+
+        return create("details")
+            .classes("json-object")
+            .open("true")
+            .children(
+                create("summary")
+                    .classes("json-object-header")
+                    .text(`${key}: {`)
+                    .build(),
+                create("div")
+                    .classes("json-object-content")
+                    .children(
+                        ...Object.keys(json).map(key => {
+                            const value = json[key];
+                            return GenericTemplates.jsonValue(key, value);
+                        }),
+                    ).build(),
+                create("div")
+                    .classes("json-object-footer")
+                    .text("}")
+                    .build()
+            ).build();
+    }
+
+    static jsonArray(key, json) {
+        return create("details")
+            .classes("json-array")
+            .open("true")
+            .children(
+                create("summary")
+                    .classes("json-array-header")
+                    .text(`${key}: [`)
+                    .build(),
+                create("div")
+                    .classes("json-array-content")
+                    .children(
+                        ...json.map(value => {
+                            return GenericTemplates.jsonValue(value);
+                        }),
+                    ).build(),
+                create("div")
+                    .classes("json-array-footer")
+                    .text("]")
                     .build()
             ).build();
     }

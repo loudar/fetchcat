@@ -21,6 +21,9 @@ export class ApiCache {
                 "Accept": "application/json",
             },
         });
+        if (res.status === 204) {
+            return null;
+        }
         const body = await res.json();
         return body.cache;
     }

@@ -272,6 +272,14 @@ button:hover {
     border-color: var(--green);
 }
 
+.toast.sensitive {
+    border-color: var(--yellow);
+}
+
+.toast.info {
+    border-color: var(--blue);
+}
+
 textarea:focus-visible {
     outline: none;
 }
