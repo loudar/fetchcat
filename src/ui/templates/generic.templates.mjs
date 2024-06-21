@@ -150,6 +150,10 @@ export class GenericTemplates {
     }
 
     static jsonValue(key, json) {
+        try {
+            json = JSON.parse(json);
+        } catch (e) {}
+
         if (json.constructor === Object) {
             return GenericTemplates.jsonObject(key, json);
         } else if (json.constructor === Array) {
@@ -239,9 +243,9 @@ export class GenericTemplates {
             ).build();
     }
 
-    static collapsible(text, content, classes = []) {
+    static collapsible(text, content, classes = [], open = false) {
         const uniqueId = Math.random().toString(36).substring(7);
-        const toggled = signal(false);
+        const toggled = signal(open);
         const iconClass = computedSignal(toggled, on => on ? "rot90" : "rot0");
         let contentElement;
 
@@ -251,7 +255,7 @@ export class GenericTemplates {
             .children(content)
             .build()
 
-        return create("details")
+        const details = create("details")
             .classes("collapsible", "flex-v", ...classes)
             .children(
                 create("summary")
@@ -268,6 +272,10 @@ export class GenericTemplates {
                     ).build(),
                 contentElement
             ).build();
+        if (open) {
+            details.open = "true";
+        }
+        return details;
     }
 
     static headers(headers, onlyDisplay = false) {
@@ -280,12 +288,12 @@ export class GenericTemplates {
         return create("div")
             .classes("flex-v")
             .children(
-                GenericTemplates.buttonWithIcon("add", "Add Header", () => {
+                ifjs(onlyDisplay, GenericTemplates.buttonWithIcon("add", "Add Header", () => {
                     headers.value = {
                         ...headers.value,
                         ["Header-" + Math.random().toString(36).substring(7)]: "",
                     };
-                }),
+                }), true),
                 create("table")
                     .children(
                         create("thead")
@@ -361,6 +369,46 @@ export class GenericTemplates {
                             };
                         }),
                     ).build(),
+            ).build();
+    }
+
+    static bodyEditor(request, headers) {
+        const body = signal(request.body);
+        body.subscribe((val) => {
+            request.updateBody(val);
+        });
+        const contentType = computedSignal(headers, h => h["Content-Type"]);
+
+        return create("div")
+            .classes("flex-v")
+            .children(
+                GenericTemplates.textArea(body, null, "body", (val) => {
+                    body.value = val;
+                }),
+                create("h2")
+                    .text("Preview")
+                    .build(),
+                GenericTemplates.bodyDisplay(body, contentType),
+            ).build();
+    }
+
+    static textArea(value, label, id, oninput) {
+        return create("label")
+            .classes("flex-v")
+            .for(id)
+            .children(
+                ifjs(label, create("span")
+                    .text(label)
+                    .build()),
+                create("textarea")
+                    .classes("full-width")
+                    .name(id)
+                    .id(id)
+                    .oninput((e) => {
+                        oninput(e.target.value);
+                    })
+                    .text(value)
+                    .build()
             ).build();
     }
 }

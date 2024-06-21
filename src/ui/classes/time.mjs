@@ -1,8 +1,8 @@
-export function formatTime(time) {
-    let hours = Math.floor(time / 3600);
-    let minutes = Math.floor((time % 3600) / 60);
-    let seconds = Math.floor(time % 60);
-    let milliseconds = Math.floor((time % 1) * 1000);
+export function formatTime(ms) {
+    let milliseconds = ms % 1000;
+    let seconds = Math.floor(ms / 1000) % 60;
+    let minutes = Math.floor(ms / 1000 / 60) % 60;
+    let hours = Math.floor(ms / 1000 / 60 / 60);
     let result = "";
     if (hours > 0) {
         result += `${hours}h `;

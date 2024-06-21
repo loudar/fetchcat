@@ -107,7 +107,7 @@
     border-radius: 100%;
 }
 
-.json-display * {
+.json-display *, .text-display * {
     font-family: 'GeistMonoNerdFontMono', monospace;
     font-weight: 400;
     font-size: calc(var(--font-size-base) * 0.9);

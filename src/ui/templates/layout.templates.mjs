@@ -11,9 +11,9 @@ export class LayoutTemplates {
         });
         const headersTitle = computedSignal(headers, (val) => {
             if (Object.keys(val).length === 0) {
-                return "Headers";
+                return "Request Headers";
             }
-            return "Headers (" + Object.keys(val).length + ")";
+            return "Request Headers (" + Object.keys(val).length + ")";
         });
 
         return create("div")
@@ -34,17 +34,18 @@ export class LayoutTemplates {
                             });
                         }),
                     ).build(),
-                create("div")
-                    .classes("flex", "flex-grow")
-                    .children(
-                        GenericTemplates.collapsible(headersTitle, GenericTemplates.headers(headers), ["full-width"]),
-                    ).build(),
+                GenericTemplates.collapsible(headersTitle, GenericTemplates.headers(headers), ["full-width"]),
+                GenericTemplates.collapsible("Request Body", GenericTemplates.bodyEditor(request, headers), ["full-width"], true),
                 ifjs(sending, create("div")
                     .classes("flex")
                     .children(
                         GenericTemplates.spinner(),
-                        GenericTemplates.infoText("info", "No response yet", ["info"])
+                        GenericTemplates.infoText("info", "No response yet", ["info"]),
+                        GenericTemplates.buttonWithIcon("stop", "Stop", () => {
+                            sending.value = false;
+                        }, ["negative"]),
                     ).build()),
+                create("hr").build(),
                 ifjs(response.signal, LayoutTemplates.responseDisplay(response.signal)),
             ).build();
     }
@@ -87,7 +88,7 @@ export class LayoutTemplates {
                         GenericTemplates.infoText("timer", timeText, [responseClass]),
                     ).build(),
                 GenericTemplates.collapsible(responseHeadersTitle, GenericTemplates.headers(responseHeaders, true), ["full-width"]),
-                GenericTemplates.bodyDisplay(body, contentType),
+                GenericTemplates.collapsible("Response Body", GenericTemplates.bodyDisplay(body, contentType), ["full-width"], true),
             ).build();
     }
 }

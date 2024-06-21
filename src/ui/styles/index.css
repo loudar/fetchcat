@@ -364,6 +364,7 @@ table {
 th, td {
     padding: var(--gap-h) var(--gap-v);
     line-height: 1.5;
+    text-align: left;
 }
 
 table tr:nth-child(odd) {
@@ -372,4 +373,16 @@ table tr:nth-child(odd) {
 
 table tr:nth-child(even) {
     background-color: var(--bg-3);
+}
+
+hr {
+    width: calc(100% - (var(--input-border-radius) * 2));
+    margin: var(--gap-v) var(--input-border-radius);
+    border: none;
+    border-bottom: 1px solid var(--bg-4);
+}
+
+textarea {
+    resize: vertical;
+    font-family: 'GeistMonoNerdFontMono', monospace;
 }

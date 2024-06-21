@@ -16,12 +16,24 @@ function startServer() {
             });
             return;
         }
+        const reqHeaders = {};
+        if (resBody.headers) {
+            for (const key in resBody.headers) {
+                if (key && resBody.headers[key]) {
+                    reqHeaders[key] = resBody.headers[key];
+                }
+            }
+        }
+        let reqBody;
+        if (resBody.body && resBody.method !== "GET" && resBody.method !== "HEAD") {
+            reqBody = resBody.body;
+        }
 
         const start = Date.now();
         const response = await fetch(url, {
             method: resBody.method,
-            headers: resBody.headers,
-            body: resBody.body,
+            headers: reqHeaders,
+            body: reqBody,
         });
         const end = Date.now();
         const body = await response.text();
@@ -31,9 +43,9 @@ function startServer() {
         } catch (e) {
             json = null;
         }
-        let headers = {};
+        let resHeaders = {};
         response.headers.forEach((value, key) => {
-            headers[key] = value;
+            resHeaders[key] = value;
         });
         let out;
         if (json) {
@@ -41,7 +53,7 @@ function startServer() {
                 json,
                 status: response.status,
                 statusText: response.statusText,
-                headers,
+                headers: resHeaders,
                 time: end - start,
             };
         } else {
@@ -49,7 +61,7 @@ function startServer() {
                 body,
                 status: response.status,
                 statusText: response.statusText,
-                headers,
+                headers: resHeaders,
                 time: end - start,
             };
         }
