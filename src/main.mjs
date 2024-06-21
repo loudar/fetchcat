@@ -4,6 +4,9 @@ import {StorageCache} from "./api/storagecache.mjs";
 
 app.setAppUserModelId('fetchcat');
 
+import {updateElectronApp} from 'update-electron-app';
+updateElectronApp();
+
 function startServer() {
     const app = express();
     app.use(express.json());

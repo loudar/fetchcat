@@ -10,11 +10,12 @@ export class LayoutTemplates {
             request.updateHeaders(val);
         });
         const headersTitle = computedSignal(headers, (val) => {
-            if (Object.keys(val).length === 0) {
+            if (!val || Object.keys(val).length === 0) {
                 return "Request Headers";
             }
             return "Request Headers (" + Object.keys(val).length + ")";
         });
+        let urlDebounceTimeout = null;
 
         return create("div")
             .classes("app", "padded-big", "flex-v")
@@ -27,6 +28,11 @@ export class LayoutTemplates {
                         }),
                         GenericTemplates.input("text", "url", request.url, "URL", "URL", "url", ["flex-grow"], (val) => {
                             request.updateUrl(val);
+                        }, e => {
+                            clearTimeout(urlDebounceTimeout);
+                            urlDebounceTimeout = setTimeout(() => {
+                                request.updateUrl(e.target.value);
+                            }, 500);
                         }),
                         GenericTemplates.buttonWithIcon("send", "Send", () => {
                             request.send(sending).then(async res => {
@@ -71,7 +77,7 @@ export class LayoutTemplates {
         const body = computedSignal(response, res => res ? (res.json ? res.json : res.body) : "");
         const contentType = computedSignal(response, res => res ? res.headers["content-type"] : "");
         const responseHeadersTitle = computedSignal(response, (val) => {
-            if (Object.keys(val).length === 0) {
+            if (!val || Object.keys(val).length === 0) {
                 return "Response Headers";
             }
             return "Response Headers (" + Object.keys(val).length + ")";

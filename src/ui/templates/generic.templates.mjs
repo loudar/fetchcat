@@ -161,7 +161,7 @@ export class GenericTemplates {
         const update = (value) => {
             template.value = GenericTemplates.jsonValue("root", value);
         };
-        if (json.constructor !== FjsObservable) {
+        if (!json || json.constructor !== FjsObservable) {
             return GenericTemplates.jsonValue("root", json);
         }
 
@@ -174,6 +174,12 @@ export class GenericTemplates {
         try {
             json = JSON.parse(json);
         } catch (e) {}
+
+        if (json === null || json === undefined) {
+            return create("span")
+                .text(`${key}: null`)
+                .build();
+        }
 
         if (json.constructor === Object) {
             return GenericTemplates.jsonObject(key, json);
@@ -242,6 +248,8 @@ export class GenericTemplates {
     }
 
     static jsonArray(key, json) {
+        let i = 0;
+
         return create("details")
             .classes("json-array")
             .open("true")
@@ -254,7 +262,8 @@ export class GenericTemplates {
                     .classes("json-array-content")
                     .children(
                         ...json.map(value => {
-                            return GenericTemplates.jsonValue(value);
+                            i++;
+                            return GenericTemplates.jsonValue(i, value);
                         }),
                     ).build(),
                 create("div")
