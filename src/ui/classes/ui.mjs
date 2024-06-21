@@ -44,3 +44,16 @@ export function toast(message, coordinates = null, type = "info", timeout = 5) {
         toast.remove();
     }, timeout * 1000);
 }
+
+export function guessType(value) {
+    if (value === "true" || value === "false") {
+        return "boolean";
+    }
+    if (value === "null") {
+        return "null";
+    }
+    if (!isNaN(value)) {
+        return "number";
+    }
+    return "string";
+}

@@ -67,6 +67,15 @@ export class LayoutTemplates {
         });
         const statusText = computedSignal(response, res => res ? res.status + " " + res.statusText : "");
         const timeText = computedSignal(response, res => res ? formatTime(res.time) : "");
+        const body = computedSignal(response, res => res ? (res.json ? res.json : res.body) : "");
+        const contentType = computedSignal(response, res => res ? res.headers["content-type"] : "");
+        const responseHeadersTitle = computedSignal(response, (val) => {
+            if (Object.keys(val).length === 0) {
+                return "Response Headers";
+            }
+            return "Response Headers (" + Object.keys(val).length + ")";
+        });
+        const responseHeaders = computedSignal(response, val => val ? val.headers : {});
 
         return create("div")
             .classes("flex-v")
@@ -77,7 +86,8 @@ export class LayoutTemplates {
                         GenericTemplates.infoText("http", statusText, [responseClass]),
                         GenericTemplates.infoText("timer", timeText, [responseClass]),
                     ).build(),
-                GenericTemplates.bodyDisplay(response),
+                GenericTemplates.collapsible(responseHeadersTitle, GenericTemplates.headers(responseHeaders, true), ["full-width"]),
+                GenericTemplates.bodyDisplay(body, contentType),
             ).build();
     }
 }

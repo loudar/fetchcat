@@ -1,5 +1,5 @@
 :root {
-    --black: #0f0f12;
+    --black: #0a0a0d;
     --black-2: #151519;
     --black-3: #1b1b20;
     --black-4: #1e1e24;
@@ -7,12 +7,14 @@
     --white-2: #e7ddda;
     --white-3: #ded2ce;
     --white-4: #d6c9c5;
+    --grey-light: #9f9f9f;
+    --grey-dark: #646464;
     --blue: #16bac5ff;
     --green: #6a994eff;
     --red: #bc4749ff;
     --yellow: #f0c929ff;
     --purple: #6a4c93ff;
-    --font-size-base: 18px;
+    --font-size-base: 16px;
     --gap-h: 5px;
     --gap-v: 10px;
     --input-padding-h: 0.5rem;
@@ -34,6 +36,8 @@
         --text-2: var(--black-2);
         --text-3: var(--black-3);
         --text-4: var(--black-4);
+        --neutral-light: var(--grey-dark);
+        --neutral-dark: var(--grey-light);
         --yellow: #bf871d;
         --green: #478422;
         --blue: #387be3;
@@ -50,6 +54,8 @@
         --text-2: var(--white-2);
         --text-3: var(--white-3);
         --text-4: var(--white-4);
+        --neutral-light: var(--grey-light);
+        --neutral-dark: var(--grey-dark);
     }
 }
 
@@ -346,4 +352,24 @@ nav {
 
 .bold {
     font-weight: bold;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: var(--input-border-radius);
+    overflow: hidden;
+}
+
+th, td {
+    padding: var(--gap-h) var(--gap-v);
+    line-height: 1.5;
+}
+
+table tr:nth-child(odd) {
+    background-color: var(--bg-4);
+}
+
+table tr:nth-child(even) {
+    background-color: var(--bg-3);
 }

@@ -1,6 +1,6 @@
 import {computedSignal, create, FjsObservable, ifjs, signal, signalMap} from 'https://fjs.targoninc.com/f.mjs';
 import {testImage} from "../classes/defaults.mjs";
-import {toast} from "../classes/ui.mjs";
+import {guessType, toast} from "../classes/ui.mjs";
 
 export class GenericTemplates {
     static input(type, name, value, placeholder, label, id, classes = [], onchange = () => {}, oninput = () => {}) {
@@ -116,15 +116,22 @@ export class GenericTemplates {
             ).build();
     }
 
-    static bodyDisplay(json) {
+    static bodyDisplay(body, contentType) {
+        const isJson = computedSignal(contentType, type => type && type.includes("json"));
+        const isText = computedSignal(contentType, type => type && type.includes("text"));
+
         return create("div")
             .classes("flex-grow", "body-display")
             .children(
-                ifjs(json, create("div")
+                ifjs(isJson, create("div")
                     .classes("json-display")
                     .children(
-                        GenericTemplates.jsonDisplay(json)
-                    ).build())
+                        GenericTemplates.jsonDisplay(body)
+                    ).build()),
+                ifjs(isText, create("div")
+                    .classes("text-display")
+                    .text(body)
+                    .build())
             ).build();
     }
 
@@ -164,7 +171,7 @@ export class GenericTemplates {
                     .text(`${key}: `)
                     .build(),
                 create("span")
-                    .classes("json-value", type)
+                    .classes("value", type)
                     .text(value)
                     .id(id)
                     .onclick(e => {
@@ -263,7 +270,7 @@ export class GenericTemplates {
             ).build();
     }
 
-    static headers(headers) {
+    static headers(headers, onlyDisplay = false) {
         const useHeaders = computedSignal(headers, h => {
             return Object.keys(h).map(key => {
                 return {name: key, value: h[key]};
@@ -279,32 +286,81 @@ export class GenericTemplates {
                         ["Header-" + Math.random().toString(36).substring(7)]: "",
                     };
                 }),
-                signalMap(useHeaders, create("div").classes("flex-v"),
-                    header => GenericTemplates.header(headers, header))
+                create("table")
+                    .children(
+                        create("thead")
+                            .children(
+                                create("tr")
+                                    .children(
+                                        create("th")
+                                            .text("Header Name")
+                                            .build(),
+                                        create("th")
+                                            .text("Header Value")
+                                            .build(),
+                                    ).build()
+                            ).build(),
+                        signalMap(useHeaders, create("tbody"),
+                            header => GenericTemplates.header(headers, header, onlyDisplay))
+                    ).build(),
             ).build();
     }
 
-    static header(headers, header) {
-        return create("div")
-            .classes("flex", "align-center")
+    static header(headers, header, onlyDisplay = false) {
+        if (onlyDisplay) {
+            const guessedType = guessType(header.value);
+            const id = Math.random().toString(36).substring(7);
+
+            return create("tr")
+                .classes("align-center")
+                .children(
+                    create("td")
+                        .classes("header-name")
+                        .text(header.name)
+                        .build(),
+                    create("td")
+                        .children(
+                            create("span")
+                                .classes("value", guessedType)
+                                .text(header.value)
+                                .id(id)
+                                .onclick(e => {
+                                    navigator.clipboard.writeText(header.value);
+                                    const element = document.getElementById(id);
+
+                                    toast("Copied to clipboard", {
+                                        x: element.getBoundingClientRect().right + 10,
+                                        y: element.getBoundingClientRect().top,
+                                    }, "positive", 2);
+                                })
+                                .build(),
+                        ).build(),
+                ).build();
+        }
+
+        return create("tr")
+            .classes("align-center")
             .children(
-                create("span")
-                    .text("Header: ")
-                    .build(),
-                GenericTemplates.input("text", "headername", header.name, "Header Name", "Header Name", "header-name", ["flex-grow"], (val) => {
-                    const newHeaders = {
-                        ...headers.value,
-                        [val]: header.value,
-                    };
-                    delete newHeaders[header.name];
-                    headers.value = newHeaders;
-                }),
-                GenericTemplates.input("text", "headervalue", header.value, "Header Value", "Header Value", "header-value", ["flex-grow"], (val) => {
-                    headers.value = {
-                        ...headers.value,
-                        [header.name]: val,
-                    };
-                }),
+                create("td")
+                    .children(
+                        GenericTemplates.input("text", "headername", header.name, "Header Name", "Header Name", "header-name", ["flex-grow"], (val) => {
+                            const newHeaders = {
+                                ...headers.value,
+                                [val]: header.value,
+                            };
+                            delete newHeaders[header.name];
+                            headers.value = newHeaders;
+                        }),
+                    ).build(),
+                create("td")
+                    .children(
+                        GenericTemplates.input("text", "headervalue", header.value, "Header Value", "Header Value", "header-value", ["flex-grow"], (val) => {
+                            headers.value = {
+                                ...headers.value,
+                                [header.name]: val,
+                            };
+                        }),
+                    ).build(),
             ).build();
     }
 }

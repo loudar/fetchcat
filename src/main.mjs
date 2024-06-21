@@ -31,13 +31,17 @@ function startServer() {
         } catch (e) {
             json = null;
         }
+        let headers = {};
+        response.headers.forEach((value, key) => {
+            headers[key] = value;
+        });
         let out;
         if (json) {
             out = {
                 json,
                 status: response.status,
                 statusText: response.statusText,
-                headers: response.headers,
+                headers,
                 time: end - start,
             };
         } else {
@@ -45,7 +49,7 @@ function startServer() {
                 body,
                 status: response.status,
                 statusText: response.statusText,
-                headers: response.headers,
+                headers,
                 time: end - start,
             };
         }

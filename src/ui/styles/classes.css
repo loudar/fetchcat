@@ -131,7 +131,7 @@
     line-height: 1.35;
 }
 
-.json-value {
+.value {
     background: var(--bg);
     padding: 2px 8px;
     border-radius: var(--input-border-radius);
@@ -149,24 +149,24 @@
     font-weight: bold;
 }
 
-.json-value:hover {
+.value:hover {
     background: var(--bg-3);
     border: 1px solid var(--blue);
 }
 
-.json-value.number {
+.value.number {
     color: var(--blue);
 }
 
-.json-value.string {
+.value.string {
     color: var(--green);
 }
 
-.json-value.boolean {
+.value.boolean {
     color: var(--purple);
 }
 
-.json-value.null {
+.value.null {
     color: var(--red);
 }
 
