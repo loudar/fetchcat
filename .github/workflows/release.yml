@@ -27,14 +27,18 @@ jobs:
       - name: Zip Windows
         run: 7z a -tzip fetchcat-win32-x64.zip out/fetchcat-win32-x64
 
+      - name: Get version
+        id: package
+        run: echo "::set-output name=version::$(node -p "require('./package.json').version")"
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.sha }}
-          release_name: Release ${{ github.sha }}
+          tag_name: ${{ steps.package.outputs.version }}.${{ github.run_id }}
+          release_name: Release ${{ steps.package.outputs.version }}.${{ github.run_id }}
           draft: false
           prerelease: true
 
