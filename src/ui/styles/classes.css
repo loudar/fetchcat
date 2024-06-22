@@ -197,6 +197,7 @@
     height: calc(100dvh - (var(--gap-v) * 2));
     box-sizing: border-box;
     width: 20vw;
+    min-width: max-content;
     padding: var(--gap-v);
     background: var(--bg-2);
     transition: width 0.2s ease;
