@@ -138,6 +138,7 @@
     border: 1px solid transparent;
     cursor: pointer;
     font-weight: 600;
+    max-width: max-content;
 }
 
 .info-pill {

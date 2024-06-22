@@ -32,6 +32,16 @@ export function toast(message, coordinates = null, type = "info", timeout = 5) {
                 .build()
         ).build();
     if (coordinates) {
+        if (coordinates.x > window.innerWidth - 200) {
+            coordinates.x = window.innerWidth - 200;
+        } else if (coordinates.x < 0) {
+            coordinates.x = 0;
+        }
+        if (coordinates.y > window.innerHeight - 100) {
+            coordinates.y = window.innerHeight - 100;
+        } else if (coordinates.y < 0) {
+            coordinates.y = 0;
+        }
         toast.style.left = `${coordinates.x}px`;
         toast.style.top = `${coordinates.y}px`;
         toast.style.position = "absolute";
@@ -56,4 +66,8 @@ export function guessType(value) {
         return "number";
     }
     return "string";
+}
+
+export function newId() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }

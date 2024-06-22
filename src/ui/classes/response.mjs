@@ -4,13 +4,14 @@ import {signal} from "https://fjs.targoninc.com/f.mjs";
 export class Response {
     cache = ApiCache;
 
-    constructor({json, body, status, statusText, headers, time}) {
+    constructor({json, body, status, statusText, headers, time, error}) {
         this.json = json;
         this.body = body;
         this.status = status;
         this.statusText = statusText;
         this.headers = headers;
         this.time = time;
+        this.error = error;
         this.signal = signal({
             json: this.json,
             body: this.body,
@@ -18,6 +19,7 @@ export class Response {
             statusText: this.statusText,
             headers: this.headers,
             time: this.time,
+            error: this.error,
         });
     }
 
@@ -29,6 +31,7 @@ export class Response {
             statusText: response.statusText,
             headers: response.headers,
             time: response.time,
+            error: response.error,
         });
     }
 
@@ -75,6 +78,7 @@ export class Response {
             this.statusText = lastResponse.statusText;
             this.headers = lastResponse.headers;
             this.time = lastResponse.time;
+            this.error = lastResponse.error;
             this.signal.value = lastResponse;
         } else {
             this.json = null;
@@ -83,12 +87,24 @@ export class Response {
             this.statusText = null;
             this.headers = null;
             this.time = null;
+            this.error = null;
             this.signal.value = null;
         }
     }
 
     async fromResponse(res) {
         const body = await res.json();
+        if (body.error) {
+            this.error = body.error;
+            this.json = null;
+            this.body = null;
+            this.status = null;
+            this.statusText = null;
+            this.headers = null;
+            this.time = null;
+            this.signal.value = body;
+            return;
+        }
         this.json = body.json;
         this.body = body.body;
         this.status = body.status;

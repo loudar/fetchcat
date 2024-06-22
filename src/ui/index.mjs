@@ -5,10 +5,12 @@ import {signal} from "https://fjs.targoninc.com/f.mjs";
 import {Response} from "./classes/response.mjs";
 
 const request = new Request({
-    url: "",
+    url: "https://google.com",
     method: defaultRequestType,
     headers: defaultHeaders,
     body: null,
+    name: "My request",
+    saved: false
 });
 const response = new Response({});
 await Promise.all([
@@ -16,10 +18,15 @@ await Promise.all([
     response.fillFromLocalCache()
 ]);
 const sending = signal(false);
-const sideBarOpen = signal(false);
+const sideBarOpen = signal(true);
+const requests = signal([]);
+Request.getSaved().then(reqs => {
+    console.log({reqs});
+    requests.value = reqs;
+});
 
 const content = document.getElementById('content');
-content.appendChild(LayoutTemplates.app(request, sending, response, sideBarOpen));
+content.appendChild(LayoutTemplates.app(request, requests, sending, response, sideBarOpen));
 
 document.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && e.ctrlKey) {

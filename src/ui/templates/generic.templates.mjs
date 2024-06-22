@@ -1,6 +1,6 @@
 import {computedSignal, create, FjsObservable, ifjs, signal, signalMap} from 'https://fjs.targoninc.com/f.mjs';
 import {testImage} from "../classes/defaults.mjs";
-import {guessType, toast} from "../classes/ui.mjs";
+import {guessType, newId, toast} from "../classes/ui.mjs";
 
 export class GenericTemplates {
     static input(type, name, value, placeholder, label, id, classes = [], onchange = () => {}, oninput = () => {}) {
@@ -192,7 +192,7 @@ export class GenericTemplates {
 
     static jsonPrimitive(key, value) {
         const type = value.constructor.name.toLowerCase();
-        const id = Math.random().toString(36).substring(7);
+        const id = newId();
 
         return create("div")
             .classes("json-primitive", type)
@@ -201,10 +201,13 @@ export class GenericTemplates {
                     .classes("json-key", type)
                     .text(`${key}: `)
                     .build(),
-                create("span")
+                create("div")
                     .classes("value", type)
-                    .text(value)
-                    .id(id)
+                    .children(
+                        create("span")
+                            .text(value)
+                            .build(),
+                    ).id(id)
                     .onclick(e => {
                         navigator.clipboard.writeText(value);
                         const element = document.getElementById(id);
@@ -274,7 +277,7 @@ export class GenericTemplates {
     }
 
     static collapsible(text, content, classes = [], open = false) {
-        const uniqueId = Math.random().toString(36).substring(7);
+        const uniqueId = newId();
         const toggled = signal(open);
         const iconClass = computedSignal(toggled, on => on ? "rot90" : "rot0");
         let contentElement;
@@ -321,7 +324,7 @@ export class GenericTemplates {
                 ifjs(onlyDisplay, GenericTemplates.buttonWithIcon("add", "Add Header", () => {
                     headers.value = {
                         ...headers.value,
-                        ["Header-" + Math.random().toString(36).substring(7)]: "",
+                        ["Header-" + newId()]: "",
                     };
                 }), true),
                 create("table")
@@ -347,7 +350,7 @@ export class GenericTemplates {
     static header(headers, header, onlyDisplay = false) {
         if (onlyDisplay) {
             const guessedType = guessType(header.value);
-            const id = Math.random().toString(36).substring(7);
+            const id = newId();
 
             return create("tr")
                 .classes("align-center")
@@ -358,10 +361,13 @@ export class GenericTemplates {
                         .build(),
                     create("td")
                         .children(
-                            create("span")
+                            create("div")
                                 .classes("value", guessedType)
-                                .text(header.value)
-                                .id(id)
+                                .children(
+                                    create("span")
+                                        .text(header.value)
+                                        .build(),
+                                ).id(id)
                                 .onclick(e => {
                                     navigator.clipboard.writeText(header.value);
                                     const element = document.getElementById(id);
@@ -415,10 +421,10 @@ export class GenericTemplates {
                 GenericTemplates.textArea(body, null, "body", (val) => {
                     body.value = val;
                 }),
-                create("span")
+                ifjs(body, create("span")
                     .text("Preview")
-                    .build(),
-                GenericTemplates.bodyDisplay(body, contentType),
+                    .build()),
+                ifjs(body, GenericTemplates.bodyDisplay(body, contentType)),
             ).build();
     }
 

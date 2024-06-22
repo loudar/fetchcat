@@ -2,7 +2,7 @@
     --black: #0a0a0d;
     --black-2: #151519;
     --black-3: #1b1b20;
-    --black-4: #1e1e24;
+    --black-4: #2c2c32;
     --white: #efe9e7ff;
     --white-2: #e7ddda;
     --white-3: #ded2ce;
@@ -365,6 +365,10 @@ th, td {
     padding: var(--gap-h) var(--gap-v);
     line-height: 1.5;
     text-align: left;
+}
+
+td.header-name {
+    text-wrap: nowrap;
 }
 
 table tr:nth-child(odd) {
