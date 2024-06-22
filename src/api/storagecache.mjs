@@ -14,7 +14,7 @@ export class StorageCache {
         if (value && (value.constructor === Object || value.constructor === Array)) {
             value = JSON.stringify(value);
         }
-        fs.writeFileSync(this.path + key + ".cache", value);
+        fs.writeFileSync(this.path + key + ".cache", value ?? "");
     }
 
     static get(key) {
