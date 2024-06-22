@@ -22,7 +22,6 @@ const saving = signal(false);
 const sideBarOpen = signal(true);
 const requests = signal([]);
 Request.getSaved().then(reqs => {
-    console.log({reqs});
     requests.value = reqs;
 });
 

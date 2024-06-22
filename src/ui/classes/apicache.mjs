@@ -1,5 +1,5 @@
 export class ApiCache {
-    static apiUrl = "http://localhost:8080/cache";
+    static apiUrl = "http://localhost:48676/cache";
 
     static async set(key, value) {
         await fetch(this.apiUrl, {

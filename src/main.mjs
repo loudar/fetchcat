@@ -8,9 +8,24 @@ app.setAppUserModelId('fetchcat');
 import {updateElectronApp} from 'update-electron-app';
 updateElectronApp();
 
-function startServer() {
+const port = 48676;
+
+async function startServer() {
+    try {
+        const test = await fetch(`http://localhost:${port}`);
+        if (test.status === 200) {
+            console.log('Server already running on a different instance');
+            return;
+        }
+    } catch (e) {
+        console.log('Server not running, starting...');
+    }
+
     const app = express();
     app.use(express.json());
+    app.get('/', (req, res) => {
+        res.send('Hello World');
+    });
     app.post('/send-request', sendRequest());
     app.post('/save-request', saveRequest());
     app.get('/get-saved-request', getSavedRequest());
@@ -38,7 +53,7 @@ function startServer() {
         StorageCache.set(key, value);
         res.status(200).send();
     });
-    app.listen(8080, () => {
+    app.listen(port, () => {
         console.log("Server started");
     });
 }

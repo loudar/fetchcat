@@ -3,7 +3,7 @@ import {ApiCache} from "./apicache.mjs";
 import {newId} from "./ui.mjs";
 
 export class Request {
-    static apiUrl = "http://localhost:8080/";
+    static apiUrl = "http://localhost:48676/";
     cache = ApiCache;
 
     constructor({url, method, headers, body, name, id, saved}) {

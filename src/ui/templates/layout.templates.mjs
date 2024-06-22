@@ -121,10 +121,6 @@ export class LayoutTemplates {
                                 }
                             });
                         }),
-                        create("span")
-                            .classes("status-text", savedClass)
-                            .text(savedText)
-                            .build(),
                         GenericTemplates.input("text", "name", name, "Name", "Name", "name", ["flex-grow"], (val) => {
                             request.updateName(val);
                         }),
@@ -135,6 +131,10 @@ export class LayoutTemplates {
                                 });
                             });
                         }),
+                        create("span")
+                            .classes("status-text", savedClass)
+                            .text(savedText)
+                            .build(),
                     ).build(),
                 create("div")
                     .classes("flex", "restrict-to-window")
