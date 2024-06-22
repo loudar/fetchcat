@@ -7,12 +7,12 @@ import {toast} from "../classes/ui.mjs";
 import {pasteFromClipboard} from "../classes/paste.mjs";
 
 export class LayoutTemplates {
-    static app(request, requests, sending, response, sideBarOpen) {
+    static app(request, requests, sending, saving, response, sideBarOpen) {
         return create("div")
             .classes("app", "no-wrap", "padded-big", "flex")
             .children(
                 LayoutTemplates.sideBar(request, requests, sending, response, sideBarOpen),
-                LayoutTemplates.mainPanel(request, requests, sending, response, sideBarOpen),
+                LayoutTemplates.mainPanel(request, requests, sending, saving, response, sideBarOpen),
             ).build();
     }
 
@@ -72,7 +72,7 @@ export class LayoutTemplates {
             ).build();
     }
 
-    static mainPanel(request, requests, sending, response, sideBarOpen) {
+    static mainPanel(request, requests, sending, saving, response, sideBarOpen) {
         const headers = signal(request.headers);
         headers.subscribe((val) => {
             request.updateHeaders(val);
@@ -85,7 +85,6 @@ export class LayoutTemplates {
         });
         let urlDebounceTimeout = null;
         const menuIcon = computedSignal(sideBarOpen, val => val ? "menu_open" : "menu");
-        const saving = signal(false);
         const savingIcon = computedSignal(saving, val => val ? "save" : "save_alt");
         const savedText = computedSignal(request.signal, req => (req && req.saved) ? "Saved" : "Not saved");
         const savedClass = computedSignal(request.signal, req => (req && req.saved) ? "positive" : "sensitive");

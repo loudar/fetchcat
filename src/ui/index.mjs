@@ -18,6 +18,7 @@ await Promise.all([
     response.fillFromLocalCache()
 ]);
 const sending = signal(false);
+const saving = signal(false);
 const sideBarOpen = signal(true);
 const requests = signal([]);
 Request.getSaved().then(reqs => {
@@ -26,12 +27,22 @@ Request.getSaved().then(reqs => {
 });
 
 const content = document.getElementById('content');
-content.appendChild(LayoutTemplates.app(request, requests, sending, response, sideBarOpen));
+content.appendChild(LayoutTemplates.app(request, requests, sending, saving, response, sideBarOpen));
 
 document.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && e.ctrlKey) {
+    if (!e.ctrlKey) {
+        return;
+    }
+    if (e.key === "Enter") {
         request.send(sending).then(async res => {
             await response.fromResponse(res);
+        });
+    }
+    if (e.key === "s") {
+        request.persist(saving).then(() => {
+            Request.getSaved().then(reqs => {
+                requests.value = reqs;
+            });
         });
     }
 });
