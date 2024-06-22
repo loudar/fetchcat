@@ -79,3 +79,43 @@ export function getSavedRequests() {
         res.status(200).send(requests);
     };
 }
+
+export function getSavedRequest() {
+    return async (req, res) => {
+        const id = req.query.id;
+        const request = await RequestStorage.getSavedRequest(id);
+        if (request.error) {
+            res.status(500).send(request);
+            return;
+        }
+        res.status(200).send(request);
+    };
+}
+
+export function deleteRequest() {
+    return async (req, res) => {
+        const id = req.body.id;
+        const del = await RequestStorage.deleteRequest(id);
+        if (del.error) {
+            res.status(500).send(del);
+            return;
+        }
+        res.status(200).send();
+    };
+}
+
+export function saveRequest() {
+    return async (req, res) => {
+        let body = req.body;
+        body.saved = true;
+        const newRes = await RequestStorage.newRequest(body);
+        if (newRes.error === "Request with same ID already exists") {
+            const updateRes = await RequestStorage.updateRequest(body);
+            if (updateRes.error) {
+                res.status(500).send(updateRes);
+                return;
+            }
+        }
+        res.status(200).send();
+    };
+}

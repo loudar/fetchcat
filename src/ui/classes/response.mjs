@@ -65,8 +65,12 @@ export class Response {
         this.cacheLocally().then();
     }
 
+    asObject() {
+        return this.signal.value;
+    }
+
     async cacheLocally() {
-        await this.cache.set("lastResponse", JSON.parse(JSON.stringify(this)));
+        await this.cache.set("lastResponse", this.asObject());
     }
 
     async fillFromLocalCache() {
@@ -112,5 +116,17 @@ export class Response {
         this.headers = body.headers;
         this.time = body.time;
         this.signal.value = body;
+    }
+
+    async overwrite(response) {
+        this.json = response ? response.json : null;
+        this.body = response ? response.body : null;
+        this.status = response ? response.status : null;
+        this.statusText = response ? response.statusText : null;
+        this.headers = response ? response.headers : null;
+        this.time = response ? response.time : null;
+        this.error = response ? response.error : null;
+        this.signal.value = response ? response : null;
+        await this.cacheLocally();
     }
 }

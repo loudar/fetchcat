@@ -131,6 +131,10 @@ button, input, textarea, select {
     height: max-content;
 }
 
+button.invalid, input.invalid, textarea.invalid, select.invalid {
+    border-color: var(--red);
+}
+
 button.no-border, input.no-border, textarea.no-border, select.no-border {
     border: none;
     background: transparent;
@@ -264,7 +268,7 @@ button:hover {
     padding: var(--gap-h) var(--gap-v);
     display: flex;
     gap: var(--gap-h);
-    align-self: end;
+    align-self: center;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
     max-width: max-content;
     pointer-events: none;
@@ -284,6 +288,30 @@ button:hover {
 
 .toast.info {
     border-color: var(--blue);
+}
+
+.toast.special {
+    border-color: var(--purple);
+}
+
+.status-text.positive {
+    color: var(--green);
+}
+
+.status-text.negative {
+    color: var(--red);
+}
+
+.status-text.sensitive {
+    color: var(--yellow);
+}
+
+.status-text.info {
+    color: var(--blue);
+}
+
+.status-text.special {
+    color: var(--purple);
 }
 
 textarea:focus-visible {

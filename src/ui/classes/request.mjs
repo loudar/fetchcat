@@ -7,6 +7,7 @@ export class Request {
     cache = ApiCache;
 
     constructor({url, method, headers, body, name, id, saved}) {
+        this.signal = signal({});
         this.new({url, method, headers, body, name, id, saved});
     }
 
@@ -29,7 +30,7 @@ export class Request {
         this.name = name;
         this.saved = saved;
         this.id = id ?? newId();
-        this.signal = signal(this.toPayload());
+        this.signal.value = this.asObject();
     }
 
     toPayload() {
@@ -50,26 +51,31 @@ export class Request {
 
     updateUrl(url) {
         this.url = url;
+        this.saved = false;
         this.cacheLocally().then();
     }
 
     updateMethod(method) {
         this.method = method;
+        this.saved = false;
         this.cacheLocally().then();
     }
 
     updateHeaders(headers) {
         this.headers = headers;
+        this.saved = false;
         this.cacheLocally().then();
     }
 
     updateBody(body) {
         this.body = body;
+        this.saved = false;
         this.cacheLocally().then();
     }
 
     updateName(name) {
         this.name = name;
+        this.saved = false;
         this.cacheLocally().then();
     }
 
@@ -118,17 +124,15 @@ export class Request {
         return await res.json();
     }
 
-    async delete() {
+    static async delete(id) {
         await fetch(`${Request.apiUrl}delete-request`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
             },
-            body: JSON.stringify({id: this.id}),
+            body: JSON.stringify({id}),
         });
-        this.saved = false;
-        await this.cacheLocally();
     }
 
     async fillFromLocalCache() {

@@ -25,29 +25,46 @@ export class LayoutTemplates {
                     .text("Saved requests")
                     .build(),
                 signalMap(requests, create("div").classes("flex-v"),
-                    req => LayoutTemplates.requestInList(req, requests, request))
+                    req => LayoutTemplates.requestInList(req, requests, request, response))
             ).build();
     }
 
-    static requestInList(request, requests, currentRequest) {
+    static requestInList(request, requests, currentRequest, currentResponse) {
         return create("div")
-            .classes("flex", "align-center", "request-list-item", "no-wrap")
+            .classes("flex", "align-center", "request-list-item", "no-wrap", "space-between")
             .children(
-                create("span")
-                    .text(request.name)
-                    .build(),
-                GenericTemplates.buttonWithIcon("open_in_browser", "Open", async () => {
-                    await currentRequest.overwrite(request);
-                    toast(`Request "${request.name}" opened`, null, "positive");
-                }),
-                GenericTemplates.buttonWithIcon("delete", "Delete", () => {
-                    request.delete().then(() => {
-                        Request.getSaved().then(reqs => {
-                            currentRequest.value = null;
-                            requests.value = reqs;
-                        });
-                    });
-                }, ["negative"]),
+                create("div")
+                    .children(
+                        create("span")
+                            .text(request.name)
+                            .build(),
+                    ).build(),
+                create("div")
+                    .classes("flex", "no-wrap")
+                    .children(
+                        GenericTemplates.buttonWithIcon("open_in_browser", "Open", async () => {
+                            await currentRequest.overwrite(request);
+                            await currentResponse.overwrite(null);
+                            toast(`Request "${request.name}" opened`, null, "positive");
+                        }),
+                        GenericTemplates.buttonWithIcon("delete", "Delete", () => {
+                            Request.delete(request.id).then(() => {
+                                Request.getSaved().then(reqs => {
+                                    if (currentRequest.id === request.id) {
+                                        currentRequest.new({
+                                            url: "",
+                                            method: "GET",
+                                            headers: {},
+                                            body: null,
+                                            name: "",
+                                            saved: false
+                                        });
+                                    }
+                                    requests.value = reqs;
+                                });
+                            });
+                        }, ["negative"]),
+                    ).build(),
             ).build();
     }
 
@@ -66,8 +83,11 @@ export class LayoutTemplates {
         const menuIcon = computedSignal(sideBarOpen, val => val ? "menu_open" : "menu");
         const saving = signal(false);
         const savingIcon = computedSignal(saving, val => val ? "save" : "save_alt");
-        const savedText = computedSignal(request.signal, req => (req && req.saved) ? "Saved request" : "Unsaved request");
+        const savedText = computedSignal(request.signal, req => (req && req.saved) ? "Saved" : "Not saved");
+        const savedClass = computedSignal(request.signal, req => (req && req.saved) ? "positive" : "sensitive");
         const name = computedSignal(request.signal, req => req ? req.name : "");
+        const url = computedSignal(request.signal, req => req ? req.url : "");
+        const method = computedSignal(request.signal, req => req ? req.method : "GET");
 
         return create("div")
             .classes("flex-v", "flex-grow")
@@ -78,7 +98,18 @@ export class LayoutTemplates {
                         GenericTemplates.buttonWithIcon(menuIcon, "Menu", () => {
                             sideBarOpen.value = !sideBarOpen.value;
                         }),
+                        GenericTemplates.buttonWithIcon("edit_square", "New request", () => {
+                            request.new({
+                                url: "",
+                                method: "GET",
+                                headers: {},
+                                body: null,
+                                name: "",
+                                saved: false
+                            });
+                        }),
                         create("span")
+                            .classes("status-text", savedClass)
                             .text(savedText)
                             .build(),
                         GenericTemplates.input("text", "name", name, "Name", "Name", "name", ["flex-grow"], (val) => {
@@ -95,17 +126,17 @@ export class LayoutTemplates {
                 create("div")
                     .classes("flex", "restrict-to-window")
                     .children(
-                        GenericTemplates.select(null, requestTypes, signal(request.method), (type) => {
+                        GenericTemplates.select(null, requestTypes, method, (type) => {
                             request.updateMethod(type);
                         }),
-                        GenericTemplates.input("text", "url", request.url, "URL", "URL", "url", ["flex-grow"], (val) => {
+                        GenericTemplates.input("text", "url", url, "URL", "URL", "url", ["flex-grow"], (val) => {
                             request.updateUrl(val);
                         }, e => {
                             clearTimeout(urlDebounceTimeout);
                             urlDebounceTimeout = setTimeout(() => {
                                 request.updateUrl(e.target.value);
                             }, 500);
-                        }),
+                        }, true),
                         GenericTemplates.buttonWithIcon("send", "Send", () => {
                             request.send(sending).then(async res => {
                                 await response.fromResponse(res);
@@ -147,7 +178,7 @@ export class LayoutTemplates {
         const statusText = computedSignal(response, res => res ? res.status + " " + res.statusText : "");
         const timeText = computedSignal(response, res => res ? formatTime(res.time) : "");
         const body = computedSignal(response, res => res ? (res.json ? res.json : res.body) : "");
-        const contentType = computedSignal(response, res => res ? res.headers["content-type"] : "");
+        const contentType = computedSignal(response, res => (res && res.headers) ? res.headers["content-type"] : "");
         const error = computedSignal(response, res => res ? res.error : null);
         const responseHeadersTitle = computedSignal(response, (val) => {
             if (!val || Object.keys(val).length === 0) {

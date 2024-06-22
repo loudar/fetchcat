@@ -3,23 +3,45 @@ import {testImage} from "../classes/defaults.mjs";
 import {guessType, newId, toast} from "../classes/ui.mjs";
 
 export class GenericTemplates {
-    static input(type, name, value, placeholder, label, id, classes = [], onchange = () => {}, oninput = () => {}) {
+    static input(type, name, value, placeholder, label, id, classes = [], onchange = () => {}, oninput = () => {}, required = false) {
+        const validate = () => {
+            const el = document.getElementById(id);
+            if (el.required) {
+                if (!el.value || el.value === "") {
+                    el.classList.add("invalid");
+                    el.title = `${label} is required`;
+                } else {
+                    el.classList.remove("invalid");
+                    el.title = label;
+                }
+            }
+        }
+
+        const input = create("input")
+            .type(type)
+            .classes("full-width")
+            .name(name)
+            .value(value)
+            .placeholder(placeholder)
+            .id(id)
+            .onchange(e => {
+                onchange(e.target.value);
+            })
+            .oninput(e => {
+                validate();
+                oninput(e);
+            });
+
+        if (required) {
+            input.required("true");
+            setTimeout(validate, 100);
+        }
+
         return create("label")
             .classes("flex-v", ...classes)
             .for(name)
             .children(
-                create("input")
-                    .type(type)
-                    .classes("full-width")
-                    .name(name)
-                    .value(value)
-                    .placeholder(placeholder)
-                    .id(id)
-                    .onchange(e => {
-                        onchange(e.target.value);
-                    })
-                    .oninput(oninput)
-                    .build()
+                input.build()
             ).build();
     }
 
@@ -199,7 +221,7 @@ export class GenericTemplates {
             .children(
                 create("span")
                     .classes("json-key", type)
-                    .text(`${key}: `)
+                    .text(`${key}:`)
                     .build(),
                 create("div")
                     .classes("value", type)
@@ -313,6 +335,9 @@ export class GenericTemplates {
 
     static headers(headers, onlyDisplay = false) {
         const useHeaders = computedSignal(headers, h => {
+            if (!h) {
+                return [];
+            }
             return Object.keys(h).map(key => {
                 return {name: key, value: h[key]};
             });
@@ -394,7 +419,7 @@ export class GenericTemplates {
                             };
                             delete newHeaders[header.name];
                             headers.value = newHeaders;
-                        }),
+                        }, () => {}, true),
                     ).build(),
                 create("td")
                     .children(
@@ -403,7 +428,7 @@ export class GenericTemplates {
                                 ...headers.value,
                                 [header.name]: val,
                             };
-                        }),
+                        }, () => {}, true),
                     ).build(),
             ).build();
     }
@@ -413,7 +438,7 @@ export class GenericTemplates {
         body.subscribe((val) => {
             request.updateBody(val);
         });
-        const contentType = computedSignal(headers, h => h["Content-Type"]);
+        const contentType = computedSignal(headers, h => h ? h["Content-Type"] : "text/plain");
 
         return create("div")
             .classes("flex-v")
