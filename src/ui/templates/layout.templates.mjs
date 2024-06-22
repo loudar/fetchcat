@@ -34,11 +34,12 @@ export class LayoutTemplates {
         const activeClass = computedSignal(currentRequest.signal, req => req && req.id === request.id ? "active" : "_");
 
         return create("div")
-            .classes("flex", "align-center", "request-list-item", "no-wrap", "space-between", activeClass)
+            .classes("flex-v", "align-center", "request-list-item", activeClass)
             .children(
                 create("div")
                     .children(
                         create("span")
+                            .classes("bold")
                             .text(request.name)
                             .build(),
                     ).build(),
@@ -93,7 +94,7 @@ export class LayoutTemplates {
         const method = computedSignal(request.signal, req => req ? req.method : "GET");
 
         return create("div")
-            .classes("flex-v", "flex-grow")
+            .classes("flex-v", "flex-grow", "main-panel")
             .children(
                 create("div")
                     .classes("flex", "align-center")

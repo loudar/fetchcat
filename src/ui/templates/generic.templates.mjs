@@ -139,8 +139,9 @@ export class GenericTemplates {
     }
 
     static bodyDisplay(body, contentType) {
-        const isJson = computedSignal(contentType, type => type && type.includes("json"));
-        const isText = computedSignal(contentType, type => type && type.includes("text"));
+        const isJson = computedSignal(contentType, type => type && type.includes("application/json"));
+        const isText = computedSignal(contentType, type => type && type.includes("text/plain"));
+        const isHtml = computedSignal(contentType, type => type && type.includes("text/html"));
 
         return create("div")
             .classes("flex-grow", "flex-v", "body-display")
@@ -174,7 +175,10 @@ export class GenericTemplates {
                 ifjs(isText, create("div")
                     .classes("text-display")
                     .text(body)
-                    .build())
+                    .build()),
+                ifjs(isHtml, create("iframe")
+                    .src("data:text/html;charset=utf-8," + encodeURIComponent(body.value))
+                    .build()),
             ).build();
     }
 

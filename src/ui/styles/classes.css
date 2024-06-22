@@ -181,6 +181,11 @@
     justify-content: space-between;
 }
 
+.main-panel {
+    max-height: calc(100vh - 2 * var(--gap-v));
+    overflow: auto;
+}
+
 .sidebar.closed {
     width: 0;
     padding: 0;
@@ -195,14 +200,21 @@
     padding: var(--gap-v);
     background: var(--bg-2);
     transition: width 0.2s ease;
+    border-radius: var(--input-border-radius);
 }
 
 .request-list-item {
     padding: var(--gap-v);
     border-radius: var(--input-border-radius);
     background: var(--bg);
+    max-width: max-content;
 }
 
 .request-list-item.active {
     border-left: 4px solid var(--blue);
+}
+
+iframe {
+    border: none;
+    height: 100vh;
 }
