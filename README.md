@@ -1,3 +1,7 @@
+![icon_0_5x](https://github.com/loudar/fetchcat/assets/35202909/8d1cc597-4156-46ea-95aa-0c65df8d8769)
+
+fetchcat is a simple tool to send HTTP requests and allow the option to save them. No account needed, because everything is on your computer.
+
 # Run
 
 - Go to [Releases](https://github.com/loudar/fetchcat/tags)
