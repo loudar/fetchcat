@@ -196,3 +196,9 @@
     background: var(--bg-2);
     transition: width 0.2s ease;
 }
+
+.request-list-item {
+    padding: var(--gap-v);
+    border-radius: var(--input-border-radius);
+    background: var(--bg);
+}
