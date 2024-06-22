@@ -11,7 +11,7 @@ export class StorageCache {
 
     static set(key, value) {
         console.log(`Cache file: ${this.path + key + ".cache"}`);
-        if (value.constructor === Object || value.constructor === Array) {
+        if (value && (value.constructor === Object || value.constructor === Array)) {
             value = JSON.stringify(value);
         }
         fs.writeFileSync(this.path + key + ".cache", value);

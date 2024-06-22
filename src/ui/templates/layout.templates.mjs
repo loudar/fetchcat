@@ -4,6 +4,7 @@ import {requestTypes} from "../classes/defaults.mjs";
 import {formatTime} from "../classes/time.mjs";
 import {Request} from "../classes/request.mjs";
 import {toast} from "../classes/ui.mjs";
+import {pasteFromClipboard} from "../classes/paste.mjs";
 
 export class LayoutTemplates {
     static app(request, requests, sending, response, sideBarOpen) {
@@ -30,8 +31,10 @@ export class LayoutTemplates {
     }
 
     static requestInList(request, requests, currentRequest, currentResponse) {
+        const activeClass = computedSignal(currentRequest.signal, req => req && req.id === request.id ? "active" : "_");
+
         return create("div")
-            .classes("flex", "align-center", "request-list-item", "no-wrap", "space-between")
+            .classes("flex", "align-center", "request-list-item", "no-wrap", "space-between", activeClass)
             .children(
                 create("div")
                     .children(
@@ -106,6 +109,16 @@ export class LayoutTemplates {
                                 body: null,
                                 name: "",
                                 saved: false
+                            });
+                        }),
+                        GenericTemplates.buttonWithIcon("content_paste", "Paste from clipboard", async () => {
+                            pasteFromClipboard().then(async req => {
+                                if (!req.error) {
+                                    await request.overwrite(req);
+                                    toast("Pasted request from clipboard", null, "positive");
+                                } else {
+                                    toast(`Error pasting from clipboard: ${req.error}`, null, "negative");
+                                }
                             });
                         }),
                         create("span")
