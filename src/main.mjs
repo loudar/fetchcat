@@ -66,7 +66,8 @@ function createWindow () {
         autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: true,
-        }
+        },
+        icon: 'src/ui/assets/images/icon_1x.png',
     });
 
     win.loadFile('src/ui/index.html').then(r => {
