@@ -33,8 +33,8 @@ jobs:
       - name: Build Linux
         run: | 
           npm run make
-          mv out/make/deb/x64/fetchcat_${{ steps.package.outputs.version }}_amd64.deb fetchcat-linux.deb
-          mv out/make/rpm/x64/fetchcat-${{ steps.package.outputs.version }}-1.x86_64.rpm fetchcat-linux.rpm
+          mv out/make/deb/x64/*.deb fetchcat-linux.deb
+          mv out/make/rpm/x64/*.rpm fetchcat-linux.rpm
 
       - name: Get version
         id: package
