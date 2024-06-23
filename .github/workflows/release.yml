@@ -49,7 +49,7 @@ jobs:
           prerelease: true
 
       - name: List files
-        run: ls -la out
+        run: ls out
 
       - name: Upload Windows
         id: upload-release-asset-windows
