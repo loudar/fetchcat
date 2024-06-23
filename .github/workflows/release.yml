@@ -6,7 +6,37 @@ on:
       - main
 
 jobs:
-  build:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+
+    steps:
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Get version
+        id: package
+        run: echo "::set-output name=version::$(node -p "require('./package.json').version")"
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.package.outputs.version }}.${{ github.run_id }}
+          release_name: Release ${{ steps.package.outputs.version }}.${{ github.run_id }}
+          draft: false
+          prerelease: true
+
+  build-windows:
+    needs: create-release
     runs-on: windows-latest
 
     steps:
@@ -30,35 +60,6 @@ jobs:
           7z a -tzip ../../fetchcat-win32-x64.zip .
           cd ../..
 
-      - name: Build Linux
-        run: | 
-          npm run make
-          ls out/make
-          ls out/make/deb
-          ls out/make/rpm
-          ls out/make/deb/x64
-          ls out/make/rpm/x64
-          mv out/make/deb/x64/*.deb fetchcat-linux.deb
-          mv out/make/rpm/x64/*.rpm fetchcat-linux.rpm
-
-      - name: Get version
-        id: package
-        run: echo "::set-output name=version::$(node -p "require('./package.json').version")"
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.package.outputs.version }}.${{ github.run_id }}
-          release_name: Release ${{ steps.package.outputs.version }}.${{ github.run_id }}
-          draft: false
-          prerelease: true
-
-      - name: List files
-        run: ls
-
       - name: Upload Windows
         id: upload-release-asset-windows
         uses: actions/upload-release-asset@v1
@@ -69,6 +70,32 @@ jobs:
           asset_path: fetchcat-win32-x64.zip
           asset_name: fetchcat-win.zip
           asset_content_type: application/octet-stream
+
+  build-linux:
+    needs: create-release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Linux
+        run: |
+          npm run make
+          mv out/make/deb/x64/*.deb fetchcat-linux.deb
+          mv out/make/rpm/x64/*.rpm fetchcat-linux.rpm
+
+      - name: Get version
+        id: package
+        run: echo "::set-output name=version::$(node -p "require('./package.json').version")"
 
       - name: Upload Linux Debian
         id: upload-release-asset-linux-debian
