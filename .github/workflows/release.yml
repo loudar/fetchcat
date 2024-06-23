@@ -48,6 +48,9 @@ jobs:
           draft: false
           prerelease: true
 
+      - name: List files
+        run: ls -la out
+
       - name: Upload Windows
         id: upload-release-asset-windows
         uses: actions/upload-release-asset@v1
