@@ -31,7 +31,10 @@ jobs:
           cd ../..
 
       - name: Build Linux
-        run: npm run make
+        run: | 
+          npm run make
+          mv out/make/deb/x64/fetchcat_${{ steps.package.outputs.version }}_amd64.deb fetchcat-linux.deb
+          mv out/make/rpm/x64/fetchcat-${{ steps.package.outputs.version }}-1.x86_64.rpm fetchcat-linux.rpm
 
       - name: Get version
         id: package
@@ -49,7 +52,7 @@ jobs:
           prerelease: true
 
       - name: List files
-        run: ls out/fetchcat-win32-x64
+        run: ls
 
       - name: Upload Windows
         id: upload-release-asset-windows
@@ -58,7 +61,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: out/fetchcat-win32-x64/fetchcat-win32-x64.zip
+          asset_path: fetchcat-win32-x64.zip
           asset_name: fetchcat-win.zip
           asset_content_type: application/octet-stream
 
@@ -69,7 +72,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: out/make/deb/x64/fetchcat_${{ steps.package.outputs.version }}_amd64.deb
+          asset_path: fetchcat-linux.deb
           asset_name: fetchcat-linux.deb
           asset_content_type: application/octet-stream
 
@@ -80,6 +83,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: out/make/rpm/x64/fetchcat-${{ steps.package.outputs.version }}-1.x86_64.rpm
+          asset_path: fetchcat-linux.rpm
           asset_name: fetchcat-linux.rpm
           asset_content_type: application/octet-stream
