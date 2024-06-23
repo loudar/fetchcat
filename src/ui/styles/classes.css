@@ -188,6 +188,7 @@
 
 .sidebar.closed {
     width: 0;
+    min-width: initial;
     padding: 0;
     overflow: hidden;
     margin-left: calc(-1 * var(--gap-v));
