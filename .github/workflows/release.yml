@@ -17,9 +17,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Get version
         id: package
         run: echo "::set-output name=version::$(node -p "require('./package.json').version")"
@@ -49,7 +46,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build Windows
         run: npm run package
@@ -85,7 +82,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build Linux
         run: |
