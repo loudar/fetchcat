@@ -28,6 +28,7 @@ jobs:
         run: |
           cd out/fetchcat-win32-x64
           7z a -tzip ../../fetchcat-win32-x64.zip .
+          cd ../..
 
       - name: Build Linux
         run: npm run make
@@ -54,7 +55,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: fetchcat-win32-x64.zip
+          asset_path: out/fetchcat-win32-x64/fetchcat-win32-x64.zip
           asset_name: fetchcat-win.zip
           asset_content_type: application/octet-stream
 
