@@ -33,6 +33,11 @@ jobs:
       - name: Build Linux
         run: | 
           npm run make
+          ls out/make
+          ls out/make/deb
+          ls out/make/rpm
+          ls out/make/deb/x64
+          ls out/make/rpm/x64
           mv out/make/deb/x64/*.deb fetchcat-linux.deb
           mv out/make/rpm/x64/*.rpm fetchcat-linux.rpm
 
