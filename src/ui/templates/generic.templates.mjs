@@ -202,9 +202,7 @@ export class GenericTemplates {
         } catch (e) {}
 
         if (json === null || json === undefined) {
-            return create("span")
-                .text(`${key}: null`)
-                .build();
+            return GenericTemplates.jsonPrimitive(key, "null", "null");
         }
 
         if (json.constructor === Object) {
@@ -216,8 +214,8 @@ export class GenericTemplates {
         }
     }
 
-    static jsonPrimitive(key, value) {
-        const type = value.constructor.name.toLowerCase();
+    static jsonPrimitive(key, value, overrideType = null) {
+        const type = overrideType ?? value.constructor.name.toLowerCase();
         const id = newId();
 
         return create("div")
