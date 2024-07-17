@@ -436,17 +436,14 @@ export class GenericTemplates {
     }
 
     static bodyEditor(request, headers) {
-        const body = signal(request.body);
-        body.subscribe((val) => {
-            request.updateBody(val);
-        });
+        const body = computedSignal(request.signal, req => req ? req.body : null);
         const contentType = computedSignal(headers, h => h ? h["Content-Type"] : "text/plain");
 
         return create("div")
             .classes("flex-v")
             .children(
                 GenericTemplates.textArea(body, null, "body", (val) => {
-                    body.value = val;
+                    request.updateBody(val);
                 }),
                 ifjs(body, create("span")
                     .text("Preview")
@@ -470,7 +467,7 @@ export class GenericTemplates {
                     .oninput((e) => {
                         oninput(e.target.value);
                     })
-                    .text(value)
+                    .value(value)
                     .build()
             ).build();
     }
