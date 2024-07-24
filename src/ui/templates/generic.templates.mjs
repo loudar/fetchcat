@@ -150,7 +150,11 @@ export class GenericTemplates {
                     .classes("flex")
                     .children(
                         GenericTemplates.buttonWithIcon("content_copy", "Copy", () => {
-                            navigator.clipboard.writeText(body.value);
+                            let text = body.value;
+                            if (isJson.value) {
+                                text = JSON.stringify(body.value, null, 2);
+                            }
+                            navigator.clipboard.writeText(text);
                             toast("Copied to clipboard", null, "positive", 2);
                         }),
                         GenericTemplates.buttonWithIcon("download", "Download", () => {
