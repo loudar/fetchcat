@@ -470,6 +470,12 @@ export class GenericTemplates {
                     .classes("full-width")
                     .name(id)
                     .id(id)
+                    .onkeydown(e => {
+                        if (e.key === "Tab") {
+                            e.preventDefault();
+                            e.target.value += "  ";
+                        }
+                    })
                     .oninput((e) => {
                         oninput(e.target.value);
                     })
