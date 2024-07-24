@@ -51,6 +51,16 @@ export class LayoutTemplates {
                             await currentResponse.overwrite(null);
                             toast(`Request "${request.name}" opened`, null, "positive");
                         }),
+                        GenericTemplates.buttonWithIcon("content_copy", "Clone", () => {
+                            currentRequest.new({
+                                url: request.url,
+                                method: request.method,
+                                headers: request.headers,
+                                body: request.body,
+                                name: request.name,
+                                saved: false
+                            });
+                        }),
                         GenericTemplates.buttonWithIcon("delete", "Delete", () => {
                             Request.delete(request.id).then(() => {
                                 Request.getSaved().then(reqs => {
