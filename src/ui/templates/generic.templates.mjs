@@ -339,7 +339,7 @@ export class GenericTemplates {
         return details;
     }
 
-    static headers(headers, onlyDisplay = false) {
+    static headers(request, headers, onlyDisplay = false) {
         const useHeaders = computedSignal(headers, h => {
             if (!h) {
                 return [];
@@ -353,10 +353,11 @@ export class GenericTemplates {
             .classes("flex-v")
             .children(
                 ifjs(onlyDisplay, GenericTemplates.buttonWithIcon("add", "Add Header", () => {
-                    headers.value = {
+                    const newHeaders = {
                         ...headers.value,
                         ["Header-" + newId()]: "",
                     };
+                    request.updateHeaders(newHeaders);
                 }), true),
                 create("table")
                     .children(
@@ -373,12 +374,12 @@ export class GenericTemplates {
                                     ).build()
                             ).build(),
                         signalMap(useHeaders, create("tbody"),
-                            header => GenericTemplates.header(headers, header, onlyDisplay))
+                            header => GenericTemplates.header(request, headers, header, onlyDisplay))
                     ).build(),
             ).build();
     }
 
-    static header(headers, header, onlyDisplay = false) {
+    static header(request, headers, header, onlyDisplay = false) {
         if (onlyDisplay) {
             const guessedType = guessType(header.value);
             const id = newId();
@@ -424,16 +425,17 @@ export class GenericTemplates {
                                 [val]: header.value,
                             };
                             delete newHeaders[header.name];
-                            headers.value = newHeaders;
+                            request.updateHeaders(newHeaders);
                         }, () => {}, true),
                     ).build(),
                 create("td")
                     .children(
                         GenericTemplates.input("text", "headervalue", header.value, "Header Value", "Header Value", "header-value", ["flex-grow"], (val) => {
-                            headers.value = {
+                            const newHeaders = {
                                 ...headers.value,
                                 [header.name]: val,
                             };
+                            request.updateHeaders(newHeaders);
                         }, () => {}, true),
                     ).build(),
             ).build();

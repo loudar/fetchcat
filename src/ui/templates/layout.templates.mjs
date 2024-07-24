@@ -73,10 +73,7 @@ export class LayoutTemplates {
     }
 
     static mainPanel(request, requests, sending, saving, response, sideBarOpen) {
-        const headers = signal(request.headers);
-        headers.subscribe((val) => {
-            request.updateHeaders(val);
-        });
+        const headers = computedSignal(request.signal, req => req ? req.headers : {});
         const headersTitle = computedSignal(headers, (val) => {
             if (!val || Object.keys(val).length === 0) {
                 return "Request Headers";
@@ -156,7 +153,7 @@ export class LayoutTemplates {
                             });
                         }, ["positive"]),
                     ).build(),
-                GenericTemplates.collapsible(headersTitle, GenericTemplates.headers(headers), ["full-width"]),
+                GenericTemplates.collapsible(headersTitle, GenericTemplates.headers(request, headers), ["full-width"]),
                 GenericTemplates.collapsible("Request Body", GenericTemplates.bodyEditor(request, headers), ["full-width"], true),
                 ifjs(sending, create("div")
                     .classes("flex")
@@ -211,7 +208,7 @@ export class LayoutTemplates {
                         ifjs(error, GenericTemplates.infoText("timer", timeText, [responseClass]), true),
                         ifjs(error, GenericTemplates.infoText("error", error, ["negative"]))
                     ).build(),
-                ifjs(error, GenericTemplates.collapsible(responseHeadersTitle, GenericTemplates.headers(responseHeaders, true), ["full-width"]), true),
+                ifjs(error, GenericTemplates.collapsible(responseHeadersTitle, GenericTemplates.headers(response, responseHeaders, true), ["full-width"]), true),
                 ifjs(error, GenericTemplates.collapsible("Response Body", GenericTemplates.bodyDisplay(body, contentType), ["full-width"], true), true),
             ).build();
     }
